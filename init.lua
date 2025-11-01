@@ -433,7 +433,10 @@ require('lazy').setup({
             '--line-number',
             '--column',
             '--smart-case',
-            '!{**/.git/*,**/node_modules/*,**/package-lock.json,**/yarn.lock}',
+            '--glob=!**/.git/*',
+            '--glob=!**/node_modules/*',
+            '--glob=!**/package-lock.json',
+            '--glob=!**/yarn.lock',
           },
         },
         -- defaults = {
@@ -702,12 +705,14 @@ require('lazy').setup({
       --        For example, to see the options for `lua_ls`, you could go to: https://luals.github.io/wiki/settings/
       local servers = {
         -- clangd = {},
-        -- gopls = {},
+        gopls = {},
         -- pyright = {},
 
         html = {},
         cssls = {},
         cssmodules_ls = {},
+        emmet_language_server = {},
+        css_variables = {},
         -- rust_analyzer = {},
         -- ... etc. See `:help lspconfig-all` for a list of all the pre-configured LSPs
         --
@@ -808,6 +813,7 @@ require('lazy').setup({
       end,
       formatters_by_ft = {
         lua = { 'stylua' },
+        go = { 'goimports-reviser', 'gofumpt', 'golines' },
         -- Conform can also run multiple formatters sequentially
         -- python = { "isort", "black" },
         --
@@ -816,6 +822,10 @@ require('lazy').setup({
         javascript = { 'prettierd', 'prettier' },
         -- You can use 'stop_after_first' to run the first available formatter from the list
         -- javascript = { "prettierd", "prettier", stop_after_first = true },
+      },
+      formatters = {
+        ['goimports-reviser'] = { prepend_args = { '-rm-unused' } },
+        golines = { prepend_args = { '--max-len=80' } },
       },
     },
   },
@@ -1025,6 +1035,7 @@ require('lazy').setup({
     --    - Show your current context: https://github.com/nvim-treesitter/nvim-treesitter-context
     --    - Treesitter + textobjects: https://github.com/nvim-treesitter/nvim-treesitter-textobjects
   },
+  'windwp/nvim-ts-autotag',
 
   -- The following comments only work if you have downloaded the kickstart repo, not just copy pasted the
   -- init.lua. If you want these files, they are in the repository, so you can just download them and
@@ -1039,7 +1050,7 @@ require('lazy').setup({
   require 'kickstart.plugins.indent_line',
   require 'kickstart.plugins.lint',
   require 'kickstart.plugins.autopairs',
-  -- require 'kickstart.plugins.neo-tree',
+  require 'kickstart.plugins.neo-tree',
   require 'kickstart.plugins.gitsigns', -- adds gitsigns recommend keymaps
 
   -- NOTE: The import below can automatically add your own plugins, configuration, etc from `lua/custom/plugins/*.lua`
